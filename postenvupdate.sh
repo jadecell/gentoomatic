@@ -9,16 +9,14 @@ echo -e "$ROOTPARTITION\t\t/\t\text4\t\tnoatime\t\t0 1" >> /etc/fstab
 
 emerge sys-kernel/installkernel-gentoo
 emerge sys-kernel/gentoo-kernel-bin
-emerge sys-kernel/linux-firmware
+emerge --autounmask-continue sys-kernel/linux-firmware
 
 sed -i -e "s/hostname=\"localhost\"/hostname=\"$HOSTNAME\"/g" /etc/conf.d/hostname
 
 emerge --noreplace net-misc/netifrc
-emerge app-portage/gentoolkit
-euse -E networkmanager
 emerge flaggie
 
-flaggie networkmanager +dhclient +elogind
+flaggie networkmanager +dhclient
 
 emerge net-misc/networkmanager
 rc-update add NetworkManager default

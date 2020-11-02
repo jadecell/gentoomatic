@@ -73,7 +73,8 @@ CPUTHREADS=$(grep processor /proc/cpuinfo | wc -l)
 echo "MAKEOPTS=\"-j$CPUTHREADS -l$CPUTHREADS\"" >> /mnt/gentoo/etc/portage/make.conf
 echo "EMERGE_DEFAULT_OPTS=\"--jobs=$CPUTHREADS --load-average=$CPUTHREADS\"" >> /mnt/gentoo/etc/portage/make.conf
 echo "PORTAGE_NICENESS=\"19\"" >> /mnt/gentoo/etc/portage/make.conf
-echo "FEATURES=\"candy fixlafiles unmerge-orphans parallel-install\"">> /mnt/gentoo/etc/portage/make.conf
+echo "FEATURES=\"candy fixlafiles unmerge-orphans parallel-install\"" >> /mnt/gentoo/etc/portage/make.conf
+echo "USE=\"elogind networkmanager\"" >> /mnt/gentoo/etc/portage/make.conf
 
 
 mkdir --parents /mnt/gentoo/etc/portage/repos.conf
