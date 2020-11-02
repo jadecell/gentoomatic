@@ -14,7 +14,7 @@ eselect news read
 eselect news purge
 
 eselect profile set default/linux/amd64/17.1
-emerge -vuDU @world
+emerge -vuDU --autounmask-continue @world
 
 # Timezone
 
