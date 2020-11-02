@@ -67,7 +67,7 @@ stage3=$(ls /mnt/gentoo/stage3*)
 tar xpvf $stage3 --xattrs-include='*.*' --numeric-owner
 
 # Make.conf settings
-sed -i -e 's/COMMON_FLAGS=\"-02\ -pipe\"/COMMON_FLAGS=\"-march=native\ -02\ -pipe \"/g' /mnt/gentoo/etc/portage/make.conf
+sed -i -e 's/COMMON_FLAGS=\"-O2\ -pipe\"/COMMON_FLAGS=\"-march=native\ -O2\ -pipe \"/g' /mnt/gentoo/etc/portage/make.conf
 
 CPUTHREADS=$(grep processor /proc/cpuinfo | wc -l)
 echo "MAKEOPTS=\"-j$CPUTHREADS -l$CPUTHREADS\"" >> /mnt/gentoo/etc/portage/make.conf
