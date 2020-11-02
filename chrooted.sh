@@ -28,5 +28,5 @@ locale-gen
 
 cd /
 
-eselect locale set "en_US.UTF-8 UTF-8"
+eselect locale set en_US.utf8
 env-update && source /etc/profile && ./postenvupdate.sh
