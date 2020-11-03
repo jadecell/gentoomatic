@@ -18,7 +18,7 @@ emerge flaggie
 
 flaggie networkmanager +dhclient
 
-emerge net-misc/networkmanager
+emerge --autounmask-continue net-misc/networkmanager
 rc-update add NetworkManager default
 
 # hosts
