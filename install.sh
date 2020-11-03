@@ -12,7 +12,7 @@ choice () {
 mkdir -p /mnt/gentoo
 
 lsblk
-choice "What is your drive name" DRIVELOCATION
+choice "What is your drive name" "" DRIVELOCATION
 
 # Runs the disk partioning program
 
