@@ -69,6 +69,15 @@ grub-install --target=x86_64-efi --efi-directory=/boot >/dev/null 2>&1
 info "Generating grub config."
 grub-mkconfig -o /boot/grub/grub.cfg >/dev/null 2>&1
 
+info "Emerge sudo, vim, and eix."
+emerge --autounmask-continue app-admin/sudo app-editors/vim app-portage/eix
+
+git clone https://gitlab.com/jadecell/installscripts.git /home/$USERNAME/installscripts
+
+echo " " >> /etc/sudoers
+echo "## Main users permissions" >> /etc/sudoers
+echo "$USERNAME ALL=(ALL) ALL" >> /etc/sudoers
+
 echo
 echo "--------Set root password--------"
 echo
