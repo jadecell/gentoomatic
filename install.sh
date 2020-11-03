@@ -1,10 +1,18 @@
 #!/bin/sh
 
-mkdir /mnt/gentoo
+info () {
+    echo "[INFO] $1"
+}
+
+choice () {
+    [ "$2" = "yn" ] && ENDING=" [y/n]? " || ENDING=": "
+    read -p "[CHOICE] $1$ENDING" $3
+}
+
+mkdir -p /mnt/gentoo
 
 lsblk
-DRIVELOCATION=" "
-read -p "[CHOICE] What is your drive name? " DRIVELOCATION
+choice "What is your drive name" DRIVELOCATION
 
 # Runs the disk partioning program
 
@@ -18,14 +26,12 @@ parted $DRIVEPATH --script name 2 rootfs
 parted $DRIVEPATH --script set 1 boot on
 
 # Makes the filesystems
-ISNVME=" "
-read -p "[CHOICE] Is your install drive an nvme device [y/n]? " ISNVME
+choice "Is your install drive an nvme device" "yn" ISNVME
 
-PARTENDING=" "
 [ "$ISNVME" = "y" ] && PARTENDING="p" || PARTENDING=""
 
-mkfs.fat -F 32 /dev/${DRIVELOCATION}${PARTENDING}1
-mkfs.ext4 /dev/${DRIVELOCATION}${PARTENDING}2
+mkfs.fat -F 32 /dev/${DRIVELOCATION}${PARTENDING}1 >/dev/null 2>&1
+mkfs.ext4 /dev/${DRIVELOCATION}${PARTENDING}2 >/dev/null 2>&1
 
 BOOTPARTITION="/dev/${DRIVELOCATION}${PARTENDING}1"
 ROOTPARTITION="/dev/${DRIVELOCATION}${PARTENDING}2"
@@ -35,8 +41,11 @@ mount $ROOTPARTITION /mnt/gentoo
 # Hostname
 
 read -p "[CHOICE] Enter hostname: " HOSTNAME
+read -p "[CHOICE] Enter normal user's name: " USERNAME
 
 # Downloading the tarball
+
+info "Downloading tarball."
 
 GENTOO_TYPE=latest-stage3-amd64
 STAGE3_PATH_URL=http://distfiles.gentoo.org/releases/amd64/autobuilds/$GENTOO_TYPE.txt
@@ -46,7 +55,7 @@ touch /mnt/gentoo/gentootype.txt
 echo $GENTOO_TYPE >> /mnt/gentoo/gentootype.txt
 cd /mnt/gentoo/
 while [ 1 ]; do
-	wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0 $STAGE3_URL
+	wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0 $STAGE3_URL >/dev/null 2>&1
 	if [ $? = 0 ]; then break; fi;
 	sleep 1s;
 done;
@@ -64,9 +73,13 @@ check_file_exists () {
 
 check_file_exists /mnt/gentoo/stage3*
 stage3=$(ls /mnt/gentoo/stage3*)
-tar xpvf $stage3 --xattrs-include='*.*' --numeric-owner
+
+info "Unpacking tarball."
+tar xpvf $stage3 --xattrs-include='*.*' --numeric-owner >/dev/null 2>&1
 
 # Make.conf settings
+
+info "Updating make.conf settings."
 sed -i -e 's/COMMON_FLAGS=\"-O2\ -pipe\"/COMMON_FLAGS=\"-march=native\ -O2\ -pipe\"/g' /mnt/gentoo/etc/portage/make.conf
 
 CPUTHREADS=$(grep processor /proc/cpuinfo | wc -l)
@@ -99,5 +112,7 @@ cp /root/gentoomatic/postenvupdate.sh /mnt/gentoo
 echo "BOOTPARTITION=\"/dev/${DRIVELOCATION}${PARTENDING}1\"" > /mnt/gentoo/values
 echo "ROOTPARTITION=\"/dev/${DRIVELOCATION}${PARTENDING}2\"" >> /mnt/gentoo/values
 echo "HOSTNAME=\"$HOSTNAME\"" >> /mnt/gentoo/values
+echo "USERNAME=\"$USERNAME\"" >> /mnt/gentoo/values
 
+info "Entering the chroot environment."
 chroot /mnt/gentoo ./chrooted.sh
