@@ -83,9 +83,10 @@ info "Updating make.conf settings."
 sed -i -e 's/COMMON_FLAGS=\"-O2\ -pipe\"/COMMON_FLAGS=\"-march=native\ -O2\ -pipe\"/g' /mnt/gentoo/etc/portage/make.conf
 
 CPUTHREADS=$(grep processor /proc/cpuinfo | wc -l)
+CPUTHREADSPLUSONE=$(( $CPUTHREADS + 1 ))
 echo " " >> /mnt/gentoo/etc/portage/make.conf
-echo "MAKEOPTS=\"-j$CPUTHREADS -l$CPUTHREADS\"" >> /mnt/gentoo/etc/portage/make.conf
-echo "EMERGE_DEFAULT_OPTS=\"--jobs=$CPUTHREADS --load-average=$CPUTHREADS\"" >> /mnt/gentoo/etc/portage/make.conf
+echo "MAKEOPTS=\"-j$CPUTHREADSPLUSONE -l$CPUTHREADS\"" >> /mnt/gentoo/etc/portage/make.conf
+echo "EMERGE_DEFAULT_OPTS=\"--jobs=$CPUTHREADSPLUSONE --load-average=$CPUTHREADS\"" >> /mnt/gentoo/etc/portage/make.conf
 echo "PORTAGE_NICENESS=\"19\"" >> /mnt/gentoo/etc/portage/make.conf
 echo "FEATURES=\"candy fixlafiles unmerge-orphans parallel-install\"" >> /mnt/gentoo/etc/portage/make.conf
 echo "USE=\"X pulseaudio dbus xft elogind networkmanager -wayland -kde -gnome -consolekit -systemd\"" >> /mnt/gentoo/etc/portage/make.conf
