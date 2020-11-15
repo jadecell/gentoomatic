@@ -144,6 +144,7 @@ fi
 echo "HOSTNAME=\"$HOSTNAME\"" >> /mnt/gentoo/values
 echo "USERNAME=\"$USERNAME\"" >> /mnt/gentoo/values
 echo "BINARYKERNEL=\"$BINARYKERNEL\"" >> /mnt/gentoo/values
+echo "DRIVELOCATION=\"$DRIVEPATH\"" >> /mnt/gentoo/values
 echo "CPUTHREADS=\"$CPUTHREADS\"" >> /mnt/gentoo/values
 echo "CPUTHREADSPLUSONE=\"$CPUTHREADSPLUSONE\"" >> /mnt/gentoo/values
 
