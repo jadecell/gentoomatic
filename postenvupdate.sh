@@ -14,21 +14,31 @@ choice () {
 # fstab
 
 info "Generating the fstab."
-echo -e "$BOOTPARTITION\t\t/boot\t\tvfat\t\tdefaults,noatime\t\t0 2" >> /etc/fstab
+echo -e "$BOOTPARTITION\t\t/boot\t\tvfat\t\tdefaults,noatime\t0 2" >> /etc/fstab
 echo -e "$ROOTPARTITION\t\t/\t\text4\t\tnoatime\t\t0 1" >> /etc/fstab
 
-info "Installing the kernel"
-emerge sys-kernel/installkernel-gentoo
-emerge sys-kernel/gentoo-kernel-bin
-emerge --autounmask-continue sys-kernel/linux-firmware
+if [[ "$BINARYKERNEL" = "y" ]]; then
+    info "Installing the binary kernel"
+    emerge sys-kernel/installkernel-gentoo
+    emerge sys-kernel/gentoo-kernel-bin
+    emerge --autounmask-continue sys-kernel/linux-firmware
+else
+    info "Installing the gentoo sources, pciutils, usbutils, genkernel, and linux-firmware"
+    emerge --autounmask-continue sys-kernel/gentoo-sources sys-apps/pciutils sys-apps/usbutils sys-kernel/genkernel sys-kernel/linux-firmware
+    firefox https://wiki.gentoo.org/wiki/Handbook:AMD64/Installation/Kernel &
+    cd /usr/src/linux
+    make menuconfig
+    clear
+    make -j$CPUTHREADSPLUSONE
+    make modules_install install
+    genkernel --install --kernel-config=/usr/src/linux/.config initramfs
+fi
 
 info "Setting the hostname."
 sed -i -e "s/hostname=\"localhost\"/hostname=\"$HOSTNAME\"/g" /etc/conf.d/hostname
 
 emerge --noreplace net-misc/netifrc
 emerge flaggie
-
-flaggie networkmanager +dhclient
 
 emerge --autounmask-continue net-misc/networkmanager
 rc-update add NetworkManager default
@@ -69,8 +79,8 @@ grub-install --target=x86_64-efi --efi-directory=/boot >/dev/null 2>&1
 info "Generating grub config."
 grub-mkconfig -o /boot/grub/grub.cfg >/dev/null 2>&1
 
-info "Emerge sudo, vim, and eix."
-emerge --autounmask-continue app-admin/sudo app-editors/vim app-portage/eix
+info "Emerge sudo, vim, git, layman and eix."
+emerge --autounmask-continue app-admin/sudo app-editors/vim app-portage/eix dev-vcs/git app-portage/layman
 
 git clone https://gitlab.com/jadecell/installscripts.git /home/$USERNAME/installscripts
 
