@@ -69,12 +69,9 @@ choice "Do you want a binary kernel" "yn" BINARYKERNEL
 # Downloading the tarball
 info "Downloading tarball."
 
-GENTOO_TYPE=latest-stage3-amd64
-STAGE3_PATH_URL=http://distfiles.gentoo.org/releases/amd64/autobuilds/$GENTOO_TYPE.txt
+STAGE3_PATH_URL=http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3-amd64.txt
 STAGE3_PATH=$(curl -s $STAGE3_PATH_URL | grep -v "^#" | cut -d" " -f1)
 STAGE3_URL=http://distfiles.gentoo.org/releases/amd64/autobuilds/$STAGE3_PATH
-touch /mnt/gentoo/gentootype.txt
-echo $GENTOO_TYPE >> /mnt/gentoo/gentootype.txt
 cd /mnt/gentoo/
 while [ 1 ]; do
 	wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0 $STAGE3_URL >/dev/null 2>&1
@@ -106,9 +103,20 @@ sed -i -e 's/COMMON_FLAGS=\"-O2\ -pipe\"/COMMON_FLAGS=\"-march=native\ -O2\ -pip
 
 CPUTHREADS=$(grep processor /proc/cpuinfo | wc -l)
 CPUTHREADSPLUSONE=$(( $CPUTHREADS + 1 ))
+RAMTOTAL=$(free -h | awk '/^Mem:/ {print $2}' | sed 's/Gi//g')
+CPUTHREADSTIMES1POINT5=$(( $(( $CPUTHREADS * 1500 )) / 1000 ))
+
+if [[ $RAMGIGS -ge $CPUTHREADSTIMES1POINT5 ]]; then
+    JOBS=$CPUTHREADSPLUSONE
+    LOADAVERAGE=$CPUTHREADS
+else
+    JOBS=$(( $(( $CPUTHREADS / 2 )) + 1))
+    LOADAVERAGE=$(( $CPUTHREADS / 2 ))
+fi
+
 echo " " >> /mnt/gentoo/etc/portage/make.conf
-echo "MAKEOPTS=\"-j$CPUTHREADSPLUSONE -l$CPUTHREADS\"" >> /mnt/gentoo/etc/portage/make.conf
-echo "EMERGE_DEFAULT_OPTS=\"--jobs=$CPUTHREADSPLUSONE --load-average=$CPUTHREADS\"" >> /mnt/gentoo/etc/portage/make.conf
+echo "MAKEOPTS=\"-j$JOBS -l$LOADAVERAGE\"" >> /mnt/gentoo/etc/portage/make.conf
+echo "EMERGE_DEFAULT_OPTS=\"--jobs=$JOBS --load-average=$LOADAVERAGE\"" >> /mnt/gentoo/etc/portage/make.conf
 echo "PORTAGE_NICENESS=\"19\"" >> /mnt/gentoo/etc/portage/make.conf
 echo "FEATURES=\"candy fixlafiles unmerge-orphans parallel-install\"" >> /mnt/gentoo/etc/portage/make.conf
 echo "USE=\"X xinerama policykit pulseaudio dbus xft elogind networkmanager -wayland -kde -gnome -consolekit -systemd\"" >> /mnt/gentoo/etc/portage/make.conf
