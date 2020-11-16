@@ -25,7 +25,6 @@ if [[ "$BINARYKERNEL" = "y" ]]; then
 else
     info "Installing the gentoo sources, pciutils, usbutils, genkernel, and linux-firmware"
     emerge --autounmask-continue sys-kernel/gentoo-sources sys-apps/pciutils sys-apps/usbutils sys-kernel/genkernel sys-kernel/linux-firmware
-    firefox https://wiki.gentoo.org/wiki/Handbook:AMD64/Installation/Kernel &
     cd /usr/src/linux
     make menuconfig
     clear
