@@ -72,7 +72,7 @@ if [[ "$ISEFI" = "y" ]]; then
     info "Emerge grub"
     emerge sys-boot/grub:2
     info "Installing grub"
-    grub-install --target=x86_64-efi --efi-directory=/boot >/dev/null 2>&1
+    grub-install --target=x86_64-efi --efi-directory=/boot
 else
     info "Emerge grub"
     emerge sys-boot/grub:2
@@ -82,12 +82,13 @@ fi
 
 
 info "Generating grub config"
-grub-mkconfig -o /boot/grub/grub.cfg >/dev/null 2>&1
+grub-mkconfig -o /boot/grub/grub.cfg
 
 info "Emerge sudo, vim, git, layman and eix"
 emerge --autounmask-continue app-admin/sudo app-editors/vim app-portage/eix dev-vcs/git app-portage/layman
 
 git clone https://gitlab.com/jadecell/installscripts.git /home/$USERNAME/installscripts
+chown -R $USERNAME:$USERNAME /home/$USERNAME/installscripts
 
 echo " " >> /etc/sudoers
 echo "## Main users permissions" >> /etc/sudoers
