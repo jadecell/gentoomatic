@@ -71,15 +71,18 @@ if [[ "$ISEFI" = "y" ]]; then
     echo 'GRUB_PLATFORMS="efi-64"' >> /etc/portage/make.conf
     info "Emerge grub"
     emerge sys-boot/grub:2
-    info "Installing grub"
-    grub-install --target=x86_64-efi --efi-directory=/boot
 else
     info "Emerge grub"
     emerge sys-boot/grub:2
+fi
+
+if [[ "$ISEFI" = "y" ]]; then
+    info "Installing grub"
+    grub-install --target=x86_64-efi --efi-directory=/boot
+else
     info "Installing grub"
     grub-install $DRIVELOCATION >/dev/null 2>&1
 fi
-
 
 info "Generating grub config"
 grub-mkconfig -o /boot/grub/grub.cfg
