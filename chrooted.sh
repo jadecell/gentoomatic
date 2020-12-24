@@ -49,6 +49,9 @@ if [[ "$LATESTGCC" = "n" ]]; then
     echo "sys-devel/gcc -~amd64" > /etc/portage/package.accept_keywords/gcc
 fi
 
+info "Emerge rust-bin"
+emerge --autounmask-continue dev-lang/rust-bin
+
 info "Settings the profile"
 eselect profile set default/linux/amd64/17.1 >/dev/null 2>&1
 info "Running the big emerge"
