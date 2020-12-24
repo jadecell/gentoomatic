@@ -57,7 +57,7 @@ lsblk
 choice "What is your drive name" "" DRIVELOCATION
 
 # Runs the disk partioning program
-
+clear
 info "Partitioning the drive"
 DRIVEPATH="/dev/$DRIVELOCATION"
 wipefs -a $DRIVEPATH
