@@ -157,4 +157,4 @@ echo "CPUTHREADSPLUSONE=\"$CPUTHREADSPLUSONE\"" >> /mnt/gentoo/values
 echo "LATESTGCC=\"$LATESTGCC\"" >> /mnt/gentoo/values
 
 info "Entering the chroot environment"
-chroot /mnt/gentoo ./chrooted.sh && rm /mnt/gentoo/{chrooted.sh,postenvupdate.sh,colors,functions,values,$stage3}
+chroot /mnt/gentoo ./chrooted.sh && rm /mnt/gentoo/{chrooted.sh,postenvupdate.sh,colors,functions,values} && rm $stage3
