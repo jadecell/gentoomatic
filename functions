@@ -1,0 +1,8 @@
+info () {
+    echo -e "${LIGHTMAGENTA}[INFO] $1${NC}"
+}
+
+choice () {
+    [ "$2" = "yn" ] && ENDING=" [y/n]? " || ENDING=": "
+    read -p "[CHOICE] $1$ENDING" $3
+}

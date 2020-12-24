@@ -1,44 +1,66 @@
 #!/bin/sh
 
-info () {
-    echo "[INFO] $1"
-}
+#         -/oyddmdhs+:.
+#      -odNMMMMMMMMNNmhy+-`
+#    -yNMMMMMMMMMMMNNNmmdhy+-
+#  `omMMMMMMMMMMMMNmdmmmmddhhy/`
+#  omMMMMMMMMMMMNhhyyyohmdddhhhdo`
+# .ydMMMMMMMMMMdhs   o/smdddhhhhdm+`
+#  oyhdmNMMMMMMMNdyooydmddddhhhhyhNd.
+#   :oyhhdNNMMMMMMMNNNmmdddhhhhhyymMh
+#     .:+sydNMMMMMNNNmmmdddhhhhhhmMmy
+#        /mMMMMMMNNNmmmdddhhhhhmMNhs:
+#     `oNMMMMMMMNNNmmmddddhhdmMNhs+`
+#   `sNMMMMMMMMNNNmmmdddddmNMmhs/.
+#  /NMMMMMMMMNNNNmmmdddmNMNdso:`
+# +MMMMMMMNNNNNmmmmdmNMNdso/-
+# yMMNNNNNNNmmmmmNNMmhs+/-`
+# /hMMNNNNNNNNMNdhs++/-`
+# `/ohdmmddhys+++/:.`
+#   `-//////:--.
 
-choice () {
-    [ "$2" = "yn" ] && ENDING=" [y/n]? " || ENDING=": "
-    read -p "[CHOICE] $1$ENDING" $3
-}
+# Gentoo install script made by Jackson
+# Post-chroot
 
-# source the transfered values
+# Source the functions
+. /functions
+
+# Source the colors
+. /colors
+
+# Source the values
 . /values
 
 source /etc/profile
 
 mount $BOOTPARTITION /boot
 
-info "Running emerge-webrsync."
+info "Running emerge-webrsync"
 emerge-webrsync >/dev/null 2>&1
-info "Running emerge --sync."
+info "Running emerge --sync"
 emerge --sync >/dev/null 2>&1
 
-info "Deleting all news."
+info "Deleting all news"
 eselect news read >/dev/null 2>&1
 eselect news purge >/dev/null 2>&1
 
-info "Settings the profile."
+if [[ "$LATESTGCC" = "n" ]]; then
+    mkdir -p /etc/portage/package.accept_keywords
+    echo "sys-devel/gcc -~amd64" > /etc/portage/package.accept_keywords/gcc
+fi
+
+info "Settings the profile"
 eselect profile set default/linux/amd64/17.1 >/dev/null 2>&1
-info "Running the big emerge."
+info "Running the big emerge"
 emerge -vuDU --autounmask-continue @world
 
 # Timezone
-
-info "Setting timezone."
+info "Setting timezone"
 echo "America/Vancouver" > /etc/timezone
 emerge --config sys-libs/timezone-data >/dev/null 2>&1
 
 # Locale
-
-info "Setting locale."
+info "Setting locale"
 echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 locale-gen >/dev/null 2>&1
 

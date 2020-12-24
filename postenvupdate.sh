@@ -1,14 +1,34 @@
 #!/bin/sh
 
-info () {
-    echo "[INFO] $1"
-}
+#         -/oyddmdhs+:.
+#      -odNMMMMMMMMNNmhy+-`
+#    -yNMMMMMMMMMMMNNNmmdhy+-
+#  `omMMMMMMMMMMMMNmdmmmmddhhy/`
+#  omMMMMMMMMMMMNhhyyyohmdddhhhdo`
+# .ydMMMMMMMMMMdhs   o/smdddhhhhdm+`
+#  oyhdmNMMMMMMMNdyooydmddddhhhhyhNd.
+#   :oyhhdNNMMMMMMMNNNmmdddhhhhhyymMh
+#     .:+sydNMMMMMNNNmmmdddhhhhhhmMmy
+#        /mMMMMMMNNNmmmdddhhhhhmMNhs:
+#     `oNMMMMMMMNNNmmmddddhhdmMNhs+`
+#   `sNMMMMMMMMNNNmmmdddddmNMmhs/.
+#  /NMMMMMMMMNNNNmmmdddmNMNdso:`
+# +MMMMMMMNNNNNmmmmdmNMNdso/-
+# yMMNNNNNNNmmmmmNNMmhs+/-`
+# /hMMNNNNNNNNMNdhs++/-`
+# `/ohdmmddhys+++/:.`
+#   `-//////:--.
 
-choice () {
-    [ "$2" = "yn" ] && ENDING=" [y/n]? " || ENDING=": "
-    read -p "[CHOICE] $1$ENDING" $3
-}
+# Gentoo install script made by Jackson
+# Post-envupdate
 
+# Source the functions
+. /functions
+
+# Source the colors
+. /colors
+
+# Source the values
 . /values
 
 # fstab
@@ -19,9 +39,7 @@ echo -e "$ROOTPARTITION\t\t/\t\text4\t\tnoatime\t\t0 1" >> /etc/fstab
 
 if [[ "$BINARYKERNEL" = "y" ]]; then
     info "Installing the binary kernel"
-    emerge sys-kernel/installkernel-gentoo
-    emerge sys-kernel/gentoo-kernel-bin
-    emerge --autounmask-continue sys-kernel/linux-firmware
+    emerge --autounmask-continue sys-kernel/installkernel-gentoo sys-kernel/gentoo-kernel-bin sys-kernel/linux-firmware
 else
     info "Installing the gentoo sources, pciutils, usbutils, genkernel, and linux-firmware"
     emerge --autounmask-continue sys-kernel/gentoo-sources sys-apps/pciutils sys-apps/usbutils sys-kernel/genkernel sys-kernel/linux-firmware
@@ -37,8 +55,11 @@ info "Setting the hostname"
 sed -i -e "s/hostname=\"localhost\"/hostname=\"$HOSTNAME\"/g" /etc/conf.d/hostname
 
 emerge --noreplace net-misc/netifrc
+
+info "Emerge flaggie"
 emerge flaggie
 
+info "Emerge NetworkManager"
 emerge --autounmask-continue net-misc/networkmanager
 rc-update add NetworkManager default
 
@@ -84,18 +105,19 @@ echo " " >> /etc/sudoers
 echo "## Main users permissions" >> /etc/sudoers
 echo "$USERNAME ALL=(ALL) ALL" >> /etc/sudoers
 
+clear
 echo
-echo "--------Set root password--------"
+echo -e "${YELLOW}--------Set ${RED}root${YELLOW} password--------${NC}"
 echo
 passwd
 
+clear
 echo
-echo "--------Set $USERNAME's password--------"
+echo -e "${YELLOW}--------Set ${RED}$USERNAME${YELLOW}'s password--------${NC}"
 echo
 passwd $USERNAME
 
+clear
 echo
-echo "--------SUCCESSFUL GENTOO INSTALLATION--------"
-echo
-echo "Please reboot"
+echo -e "${LIGHTGREEN}Successfully installed ${LIGHTMAGENTA}Gentoo${LIGHTGREEN}! ${RED}Reboot now.${NC}"
 echo
