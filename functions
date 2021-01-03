@@ -1,5 +1,5 @@
 info () {
-    echo -e "${MAGENTA}[INFO] $1${NC}"
+    echo -e "${LIGHTGREEN}[INFO] $1${NC}"
 }
 
 choice () {

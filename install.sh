@@ -49,7 +49,7 @@ choice "Do you want to use all $CPUTHREADS threads" "yn" ALLTHREADS
 
 if [[ "$ALLTHREADS" = "n" ]]; then
    choice "How many threads do you want to use" "" HOWMANYTHREADS
-   CPUTHREADS=HOWMANYTHREADS
+   CPUTHREADS=$HOWMANYTHREADS
 fi
 
 
