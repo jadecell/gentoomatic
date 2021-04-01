@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 #         -/oyddmdhs+:.
 #      -odNMMMMMMMMNNmhy+-`
 #    -yNMMMMMMMMMMMNNNmmdhy+-
@@ -38,13 +37,13 @@ info "Generating the fstab"
 echo -e "$BOOTPARTITION\t\t/boot\t\tvfat\t\tdefaults,noatime\t0 2" >> /etc/fstab
 echo -e "$ROOTPARTITION\t\t/\t\text4\t\tnoatime\t\t0 1" >> /etc/fstab
 
-if [[ "$BINARYKERNEL" = "y" ]]; then
+if [ "$BINARYKERNEL" = "y" ]; then
     info "Installing the binary kernel"
     emerge --autounmask-continue sys-kernel/installkernel-gentoo sys-kernel/gentoo-kernel-bin sys-kernel/linux-firmware
 else
     info "Installing the gentoo sources, pciutils, usbutils, genkernel, and linux-firmware"
     emerge --autounmask-continue sys-kernel/gentoo-sources sys-apps/pciutils sys-apps/usbutils sys-kernel/genkernel sys-kernel/linux-firmware
-    cd /usr/src/linux
+    cd /usr/src/linux || exit 1
     make menuconfig
     clear
     make -j$CPUTHREADSPLUSONE
@@ -74,12 +73,12 @@ echo -e "127.0.0.1\t\t$HOSTNAME.homenetwork $HOSTNAME localhost" > /etc/hosts
 
 info "Emerge sysklogd"
 emerge app-admin/sysklogd
-rc-update add sysklogd default >/dev/null 2>&1
+rc-update add sysklogd default > /dev/null 2>&1
 
 info "Emerge cronie"
 emerge sys-process/cronie
-rc-update add cronie default >/dev/null 2>&1
-crontab /etc/crontab >/dev/null 2>&1
+rc-update add cronie default > /dev/null 2>&1
+crontab /etc/crontab > /dev/null 2>&1
 
 info "Emerge mlocate"
 emerge sys-apps/mlocate
