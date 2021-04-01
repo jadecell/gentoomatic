@@ -106,9 +106,6 @@ echo " " >> /etc/sudoers
 echo "## Main users permissions" >> /etc/sudoers
 echo "$USERNAME ALL=(ALL) ALL" >> /etc/sudoers
 
-cp /etc/rc.conf /etc/rc.conf.bak
-sed -i -e 's/#rc_parallel="NO"/rc_parallel="YES"/g' /etc/rc.conf
-
 clear
 echo
 echo -e "${YELLOW}--------Set ${RED}root${YELLOW} password--------${NC}"
