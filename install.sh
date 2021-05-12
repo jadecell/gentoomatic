@@ -120,6 +120,7 @@ echo "MAKEOPTS=\"-j$CPUTHREADSPLUSONE -l$CPUTHREADS\"" >> /mnt/gentoo/etc/portag
 echo "EMERGE_DEFAULT_OPTS=\"--jobs=$CPUTHREADSPLUSONE --load-average=$CPUTHREADS\"" >> /mnt/gentoo/etc/portage/make.conf
 echo 'PORTAGE_NICENESS="19"' >> /mnt/gentoo/etc/portage/make.conf
 echo 'FEATURES="candy fixlafiles unmerge-orphans parallel-install"' >> /mnt/gentoo/etc/portage/make.conf
+echo 'ACCEPT_LICENSE="*"' >> /mnt/gentoo/etc/portage/make.conf
 [ "$ALLFLAGS" = "y" ] && echo 'USE="X xinerama policykit pulseaudio dbus xft elogind networkmanager -wayland -kde -gnome -consolekit -systemd"' >> /mnt/gentoo/etc/portage/make.conf
 [ "$UNSTABLE" = "y" ] && echo 'ACCEPT_KEYWORDS="~amd64"' >> /mnt/gentoo/etc/portage/make.conf || echo 'ACCEPT_KEYWORDS="amd64"' >> /mnt/gentoo/etc/portage/make.conf
 
